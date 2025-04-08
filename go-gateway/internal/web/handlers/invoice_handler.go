@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/AsonCS/Imersao_Full_Cycle/go-gateway/internal/domain"
@@ -25,6 +26,8 @@ func NewInvoiceHandler(service *service.InvoiceService) *InvoiceHandler {
 // Endpoint: /invoice
 // Method: POST
 func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
+	log.Default().Println("POST /invoice")
+
 	var input dto.CreateInvoiceInput
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
@@ -37,6 +40,8 @@ func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 	*/
 	account := r.Context().Value(middleware.AccountProp).(*dto.AccountOutput)
 	input.APIKey = account.APIKey
+
+	log.Default().Printf("POST /invoice?X-API-Key=%s %+v %+v \n", account.APIKey, account, input)
 
 	output, err := h.service.Create(account, input)
 	if err != nil {
@@ -52,6 +57,8 @@ func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 // Endpoint: /invoice/{id}
 // Method: GET
 func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	log.Default().Println("GET /invoice/{id}")
+
 	id := chi.URLParam(r, "id")
 	if id == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
@@ -67,6 +74,8 @@ func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	*/
 	account := r.Context().Value(middleware.AccountProp).(*dto.AccountOutput)
 	apiKey := account.APIKey
+
+	log.Default().Printf("GET /invoice/%s?X-API-Key=%s %+v \n", id, account.APIKey, account)
 
 	output, err := h.service.GetByID(account, apiKey, id)
 	if err != nil {
@@ -93,6 +102,8 @@ func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 // Endpoint: /invoice
 // Method: GET
 func (h *InvoiceHandler) ListByAccount(w http.ResponseWriter, r *http.Request) {
+	log.Default().Println("GET /invoice")
+
 	/*
 		apiKey := r.Header.Get("X-API-KEY")
 		if apiKey == "" {
@@ -101,6 +112,8 @@ func (h *InvoiceHandler) ListByAccount(w http.ResponseWriter, r *http.Request) {
 		}
 	*/
 	account := r.Context().Value(middleware.AccountProp).(*dto.AccountOutput)
+
+	log.Default().Printf("GET /invoice?X-API-Key=%s %+v \n", account.APIKey, account)
 
 	//output, err := h.service.ListByAccountAPIKey(apiKey)
 	output, err := h.service.ListByAccountID(account.ID)

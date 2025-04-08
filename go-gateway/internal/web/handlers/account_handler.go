@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/AsonCS/Imersao_Full_Cycle/go-gateway/internal/dto"
@@ -18,15 +19,18 @@ func NewAccountHandler(accountService *service.AccountService) *AccountHandler {
 	return &AccountHandler{accountService: accountService}
 }
 
-// Create processa POST /accounts
 // Retorna 201 Created ou erro 400/500
 func (h *AccountHandler) Create(w http.ResponseWriter, r *http.Request) {
+	log.Default().Println("POST /accounts")
+
 	var input dto.CreateAccountInput
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	log.Default().Printf("/accounts %+v \n", input)
 
 	output, err := h.accountService.CreateAccount(input)
 	if err != nil {
@@ -39,14 +43,20 @@ func (h *AccountHandler) Create(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(output)
 }
 
-// Get processa GET /accounts
 // Requer X-API-Key no header
 func (h *AccountHandler) Get(w http.ResponseWriter, r *http.Request) {
+	log.Default().Println("GET /accounts")
+
 	apiKey := r.Header.Get("X-API-Key")
+	if apiKey == "" {
+		apiKey = r.URL.Query().Get("X-API-Key")
+	}
 	if apiKey == "" {
 		http.Error(w, "API Key is required", http.StatusUnauthorized)
 		return
 	}
+
+	log.Default().Printf("GET /accounts?X-API-Key=%s \n", apiKey)
 
 	output, err := h.accountService.FindByAPIKey(apiKey)
 	if err != nil {
@@ -59,13 +69,20 @@ func (h *AccountHandler) Get(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(output)
 }
 
-// Get processa GET /accounts/all
 // Requer X-API-Key no header
 func (h *AccountHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	if r.Header.Get("X-API-Key") == "" && r.URL.Query().Get("X-API-Key") == "" {
+	log.Default().Println("GET /accounts/all")
+
+	apiKey := r.Header.Get("X-API-Key")
+	if apiKey == "" {
+		apiKey = r.URL.Query().Get("X-API-Key")
+	}
+	if apiKey == "" {
 		http.Error(w, "API Key is required", http.StatusUnauthorized)
 		return
 	}
+
+	log.Default().Printf("GET /accounts/all?X-API-Key=%s \n", apiKey)
 
 	output, err := h.accountService.FindAll()
 	if err != nil {

@@ -28,6 +28,9 @@ func (m *AuthMiddleware) Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		apiKey := r.Header.Get("X-API-KEY")
 		if apiKey == "" {
+			apiKey = r.URL.Query().Get("X-API-Key")
+		}
+		if apiKey == "" {
 			http.Error(w, "X-API-KEY is required", http.StatusUnauthorized)
 			return
 		}

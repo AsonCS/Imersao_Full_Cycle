@@ -23,7 +23,7 @@ go.work
 
 # IDE files
 .idea/
-.vscode/
+#.vscode/
 *.swp
 *.swo
 
