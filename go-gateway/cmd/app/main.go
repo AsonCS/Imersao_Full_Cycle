@@ -49,15 +49,16 @@ func main() {
 	accountRepository := repository.NewAccountRepository(db)
 	accountService := service.NewAccountService(accountRepository)
 
+	invoiceRepository := repository.NewInvoiceRepository(db)
+	invoiceService := service.NewInvoiceService(*accountService, invoiceRepository)
+
 	// Configura e inicia o servidor HTTP
 	port := getEnv("HTTP_PORT", "8080")
-	srv := server.NewServer(accountService, port)
+	srv := server.NewServer(accountService, invoiceService, port)
 	srv.ConfigureRoutes()
 
+	fmt.Printf("Server started on http://localhost:%s \n", port)
 	if err := srv.Start(); err != nil {
 		log.Fatal("Error starting server: ", err)
 	}
-
-	// Exibe mensagem de sucesso
-	fmt.Printf("Server started on port %s", port)
 }

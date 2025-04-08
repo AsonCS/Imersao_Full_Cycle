@@ -55,6 +55,18 @@ func (s *AccountService) UpdateBalance(apiKey string, amount float64) (*dto.Acco
 	return &output, nil
 }
 
+func (s *AccountService) UpdateBalanceOfAccount(accountOutput *dto.AccountOutput, amount float64) (*dto.AccountOutput, error) {
+	account := dto.ToAccountFromOutput(accountOutput)
+
+	account.AddBalance(amount)
+	err := s.repository.UpdateBalance(account)
+	if err != nil {
+		return nil, err
+	}
+	output := dto.FromAccount(account)
+	return &output, nil
+}
+
 func (s *AccountService) FindAll() ([]dto.AccountOutput, error) {
 	accounts, err := s.repository.FindAll()
 	if err != nil {
@@ -62,8 +74,8 @@ func (s *AccountService) FindAll() ([]dto.AccountOutput, error) {
 	}
 
 	dtoList := make([]dto.AccountOutput, len(accounts))
-	for i, account := range accounts {
-		dtoList[i] = dto.FromAccount(&account)
+	for i := 0; i < len(accounts); i++ {
+		dtoList[i] = dto.FromAccount(&accounts[i])
 	}
 
 	return dtoList, nil
