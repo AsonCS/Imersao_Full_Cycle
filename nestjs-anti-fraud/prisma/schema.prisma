@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Account {
+    createdAt    DateTime  @default(now())
+    id           String    @id
+    invoices     Invoice[]
+    isSuspicious Boolean   @default(false)
+    updatedAt    DateTime  @updatedAt
+}
+
+model FraudHistory {
+    createdAt   DateTime    @default(now())
+    description String?
+    id          String      @id @default(uuid())
+    invoice     Invoice     @relation(fields: [invoiceId], references: [id])
+    invoiceId   String      @unique
+    reason      FraudReason
+    updatedAt   DateTime    @updatedAt
+}
+
+enum FraudReason {
+    FREQUENT_HIGH_VALUE
+    SUSPICIOUS_ACCOUNT
+    UNUSUAL_PATTERN
+}
+
+model Invoice {
+    account      Account       @relation(fields: [accountId], references: [id])
+    accountId    String
+    amount       Float
+    createdAt    DateTime      @default(now())
+    fraudHistory FraudHistory?
+    id           String        @id
+    status       InvoiceStatus
+    updatedAt    DateTime      @updatedAt
+}
+
+enum InvoiceStatus {
+    APPROVED
+    REJECTED
+}

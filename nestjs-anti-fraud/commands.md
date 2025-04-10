@@ -1,0 +1,17 @@
+- `nest new nestjs-anti-fraud`
+- `docker-compose -f ../docker-compose.yaml up -d`
+- `docker-compose -f ../docker-compose.yaml down`
+- `npm install @prisma/client`
+- `npx prisma init`
+- `npx prisma migrate dev`
+- `nest g module invoices`
+- `nest g service invoices/fraud`
+- `nest g module prisma`
+- `nest g service prisma`
+- `npx prisma generate`
+- Run `start:test` script to go in test mode
+    - `await get(FraudService).processInvoice({ account_id: '1', amount: 100, invoice_id: '1' })`
+- `npx prisma studio`
+    - View database
+- `npm install @nestjs/config`
+- `npm install joi`
