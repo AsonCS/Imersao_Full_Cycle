@@ -15,3 +15,6 @@
     - View database
 - `npm install @nestjs/config`
 - `npm install joi`
+- `docker compose exec nestjs bash`
+- `nest g controller invoices`
+- `npm run start:dev`

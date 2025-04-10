@@ -4,6 +4,8 @@ import { FrequentHighValueSpecification } from './fraud/specifications/frequent-
 import { SuspiciousAccountSpecification } from './fraud/specifications/suspicious-account.specification'
 import { UnusualAmountSpecification } from './fraud/specifications/unusual-amount.specification'
 import { FraudAggregateSpecification } from './fraud/specifications/fraud-aggregate.specification'
+import { InvoicesService } from './invoices.service'
+import { InvoicesController } from './invoices.controller';
 
 @Module({
 	providers: [
@@ -27,6 +29,8 @@ import { FraudAggregateSpecification } from './fraud/specifications/fraud-aggreg
 				UnusualAmountSpecification,
 			],
 		},
+		InvoicesService,
 	],
+	controllers: [InvoicesController],
 })
 export class InvoicesModule {}
