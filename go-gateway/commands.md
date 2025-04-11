@@ -5,3 +5,5 @@
 - `migrate -path ./migrations -database "postgresql://postgres:postgres@localhost:5432/gateway?sslmode=disable" up`
 - `clear && go run .\cmd\app\main.go`
 - `docker-compose -f ../docker-compose.yaml down`
+- `docker-compose exec go-app bash`
+- `docker-compose exec kafka kafka-console-consumer --bootstrap-server kafka:29092 --topic pending-transactions --from-beginning`

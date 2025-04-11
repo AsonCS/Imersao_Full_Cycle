@@ -1,5 +1,5 @@
 ### Variáveis globais
-@baseUrl = http://localhost:8080
+@baseUrl = http://localhost:8081
 @apiKey = {{createAccount.response.body.api_key}}
 
 ### Criar uma nova conta
@@ -27,7 +27,7 @@ Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 {
-    "amount": 100.50,
+    "amount": 10050,
     "description": "Teste de fatura",
     "payment_type": "credit_card",
     "card_number": "4111111111111111",
