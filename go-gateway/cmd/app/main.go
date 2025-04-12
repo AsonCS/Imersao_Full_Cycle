@@ -50,7 +50,10 @@ func main() {
 	baseKafkaConfig := service.NewKafkaConfig()
 
 	// Configura e inicializa o produtor Kafka
-	producerTopic := getEnv("KAFKA_PENDING_TRANSACTIONS_TOPIC", "pending-transactions")
+	producerTopic := os.Getenv("KAFKA_PENDING_TRANSACTIONS_TOPIC")
+	if producerTopic == "" {
+		log.Fatal("Missing KAFKA_PENDING_TRANSACTIONS_TOPIC")
+	}
 	producerConfig := baseKafkaConfig.WithTopic(producerTopic)
 	kafkaProducer := service.NewKafkaProducer(producerConfig)
 	defer kafkaProducer.Close()
@@ -63,9 +66,15 @@ func main() {
 	invoiceService := service.NewInvoiceService(*accountService, invoiceRepository, kafkaProducer)
 
 	// Configura e inicializa o consumidor Kafka
-	consumerTopic := getEnv("KAFKA_TRANSACTIONS_RESULT_TOPIC", "transaction-results")
+	consumerTopic := os.Getenv("KAFKA_TRANSACTIONS_RESULT_TOPIC")
+	if consumerTopic == "" {
+		log.Fatal("Missing KAFKA_TRANSACTIONS_RESULT_TOPIC")
+	}
 	consumerConfig := baseKafkaConfig.WithTopic(consumerTopic)
-	groupID := getEnv("KAFKA_CONSUMER_GROUP_ID", "gateway-group")
+	groupID := os.Getenv("KAFKA_CONSUMER_GROUP_ID")
+	if groupID == "" {
+		log.Fatal("Missing KAFKA_CONSUMER_GROUP_ID")
+	}
 	kafkaConsumer := service.NewKafkaConsumer(consumerConfig, groupID, invoiceService)
 	defer kafkaConsumer.Close()
 

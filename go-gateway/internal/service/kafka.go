@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"log/slog"
 	"os"
 	"strings"
@@ -37,12 +38,14 @@ func (c *KafkaConfig) WithTopic(topic string) *KafkaConfig {
 func NewKafkaConfig() *KafkaConfig {
 	broker := os.Getenv("KAFKA_BROKER")
 	if broker == "" {
-		broker = "kafka:9093"
+		log.Fatal("Missing KAFKA_BROKER")
+		return nil
 	}
 
 	topic := os.Getenv("KAFKA_PENDING_TRANSACTIONS_TOPIC")
 	if topic == "" {
-		topic = "pending-transactions"
+		log.Fatal("Missing KAFKA_PENDING_TRANSACTIONS_TOPIC")
+		return nil
 	}
 
 	return &KafkaConfig{
