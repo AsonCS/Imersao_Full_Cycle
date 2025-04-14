@@ -9,7 +9,7 @@ export async function loginAction(formData: FormData) {
 	'use server'
 	const apiKey = formData.get('apiKey')
 
-	const response = await fetch('http://localhost:8080/accounts', {
+	const response = await fetch(`${process.env.GO_APP_HOST!}/accounts`, {
 		headers: {
 			'X-API-KEY': apiKey as string,
 		},

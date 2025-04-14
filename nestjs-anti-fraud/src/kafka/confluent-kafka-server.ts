@@ -124,7 +124,9 @@ export class ConfluentKafkaServer extends Server implements CustomTransportStrat
 			if (this.options.consumer?.allowAutoTopicCreation === true) {
 				await Promise.all(
 					registeredPatterns.map(async (pattern) => {
-						await this.admin.createTopics({ topics: [{ topic: pattern }] })
+						await this.admin
+							.createTopics({ topics: [{ topic: pattern }] })
+							.catch((error) => console.error(error))
 					})
 				)
 			}

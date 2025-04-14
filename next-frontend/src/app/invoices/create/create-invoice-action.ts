@@ -15,7 +15,7 @@ export async function createInvoiceAction(formData: FormData) {
 	const cvv = formData.get('cvv')
 	const cardholderName = formData.get('cardholderName')
 
-	const response = await fetch('http://localhost:8080/invoice', {
+	const response = await fetch(`${process.env.GO_APP_HOST!}/invoice`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

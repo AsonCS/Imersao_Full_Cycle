@@ -18,7 +18,7 @@ export class PublishProcessedInvoiceListener implements OnModuleInit {
 	@OnEvent('invoice.processed')
 	async handle(event: InvoiceProcessedEvent) {
 		await this.kafkaProducer.send({
-			topic: 'transactions_result',
+			topic: 'transaction-results',
 			messages: [
 				{
 					value: JSON.stringify({

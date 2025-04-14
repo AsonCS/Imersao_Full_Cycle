@@ -9,6 +9,6 @@
 - `docker-compose exec kafka kafka-console-consumer --bootstrap-server kafka:29092 --topic pending-transactions --from-beginning`
 - `docker-compose exec kafka kafka-console-consumer --bootstrap-server kafka:29092 --topic transaction-results --from-beginning`
 - `docker exec -it imersao_full_cycle-kafka-1 kafka-console-producer --bootstrap-server kafka:9092 --topic transaction-results`
-- `{ "invoice_id": "1c89c41b-b675-4224-8e92-7be752f27702", "status": "approved" }`
+- `{ "invoice_id": "b8dc95bb-e494-49a8-b30d-b7305414317c", "status": "approved" }`
 - `kafka-topics --list --bootstrap-server kafka:9092`
 - `go run cmd/app/main.go`
