@@ -17,4 +17,14 @@
 - `npm install joi`
 - `docker compose exec nestjs bash`
 - `nest g controller invoices`
+- `npm install`
 - `npm run start:dev`
+- `npm run start:test`
+- `npm run start:kafka`
+- `npm run build`
+- `npm run start:prod`
+- `npm install @nestjs/microservices @confluentinc/kafka-javascript`
+- `npx prisma migrate reset`
+- `docker network ls`
+- `docker compose exec front_next_js bash`
+- `docker compose -f 'docker-compose.yaml' up -d --build 'front_next_js'`

@@ -15,6 +15,8 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    networks:
+      - imersao_full_cycle_default
 
   nestjs:
     build: ./nestjs-anti-fraud
@@ -22,32 +24,51 @@ services:
       - 3000:3000
     volumes:
       - ./nestjs-anti-fraud:/home/node/app
-  
+    networks:
+      - imersao_full_cycle_default
+
+  front_next_js:
+    build: ./next-frontend
+    command: >
+      sh -c "
+        npm install &&
+        npm run build &&
+        npm run start"
+    ports:
+      - 80:80
+    volumes:
+      - ./next-frontend:/home/node/app
+    networks:
+      - imersao_full_cycle_default
+
   kafka:
     image: confluentinc/cp-server:7.9.0
     ports:
       - "9092:9092"
       - "9093:9093"
+      - "29092:29092"
     environment:
       KAFKA_NODE_ID: 1
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_PROCESS_ROLES: 'broker,controller'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
-      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
-      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
-      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
+      KAFKA_LISTENERS: "PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_LOG_DIRS: "/tmp/kraft-combined-logs"
+      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
     healthcheck:
       test: kafka-topics --bootstrap-server kafka:29092 --list
       interval: 30s
       timeout: 10s
       retries: 3
     restart: unless-stopped
+    networks:
+      - imersao_full_cycle_default
 
   kafka-init:
     image: confluentinc/cp-server:7.9.0
@@ -60,7 +81,9 @@ services:
         kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic pending-transactions --partitions 1 --replication-factor 1 &&
         kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic transaction-results --partitions 1 --replication-factor 1 &&
         echo 'Tópicos criados com sucesso!'"
-  
+    networks:
+      - imersao_full_cycle_default
+
   redpandadata:
     image: docker.redpanda.com/redpandadata/console:v2.8.5
     entrypoint: /bin/sh
@@ -75,6 +98,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+    networks:
+      - imersao_full_cycle_default
 
   go-app:
     build: ./go-gateway
@@ -83,7 +108,14 @@ services:
       - "8080:8080"
     volumes:
       - ./go-gateway:/app
+    networks:
+      - imersao_full_cycle_default
 
 volumes:
   nestjs-anti-fraud:
+  next-frontend:
   postgres_data:
+
+networks:
+  imersao_full_cycle_default:
+    external: true

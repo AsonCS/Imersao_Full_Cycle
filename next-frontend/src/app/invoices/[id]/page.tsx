@@ -3,22 +3,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Download } from 'lucide-react'
 import Link from 'next/link'
-import { cookies } from 'next/headers'
-
-export async function getInvoice(id: string) {
-	const cookiesStore = await cookies()
-	const apiKey = cookiesStore.get('apiKey')?.value
-	const response = await fetch(`http://localhost:8080/invoice/${id}`, {
-		headers: {
-			'X-API-KEY': apiKey as string,
-		},
-		cache: 'force-cache',
-		next: {
-			tags: [`accounts/${apiKey}/invoices/${id}`],
-		},
-	})
-	return response.json()
-}
+import { getInvoice } from './get-invoice.action'
 
 export default async function InvoiceDetailsPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params

@@ -8,8 +8,10 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "prisma:generate": "npx prisma generate",
     "start": "nest start",
     "start:dev": "nest start --watch",
+    "start:kafka": "nest start --watch --entryFile cmd/kafka.cmd",
     "start:test": "nest start --watch --entryFile repl",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -21,12 +23,16 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@confluentinc/kafka-javascript": "^1.2.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/event-emitter": "^3.0.1",
+    "@nestjs/microservices": "^11.0.16",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "^6.6.0",
     "joi": "^17.13.3",
+    "prisma": "^6.6.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
