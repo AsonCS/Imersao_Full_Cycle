@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { BaseRpcContext } from '@nestjs/microservices'
-import * as kafkaLib from '@confluentinc/kafka-javascript'
+//import * as kafkaLib from '@confluentinc/kafka-javascript'
 import { KafkaMessage } from '@nestjs/microservices/external/kafka.interface'
 
 type ConfluentKafkaContextArgs = [
 	message: KafkaMessage,
 	partition: number,
 	topic: string,
-	consumer: kafkaLib.KafkaJS.Consumer,
+	consumer: any /*kafkaLib.KafkaJS.Consumer*/,
 	heartbeat: () => Promise<void>,
-	producer: kafkaLib.KafkaJS.Producer,
+	producer: any /*kafkaLib.KafkaJS.Producer*/,
 ]
 
 export class ConfluentKafkaContext extends BaseRpcContext<ConfluentKafkaContextArgs> {
@@ -38,7 +38,7 @@ export class ConfluentKafkaContext extends BaseRpcContext<ConfluentKafkaContextA
 	/**
 	 * Returns the Kafka consumer reference.
 	 */
-	getConsumer(): kafkaLib.KafkaJS.Consumer {
+	getConsumer(): any /*kafkaLib.KafkaJS.Consumer*/ {
 		return this.getArgByIndex(3)
 	}
 	/**
@@ -50,7 +50,7 @@ export class ConfluentKafkaContext extends BaseRpcContext<ConfluentKafkaContextA
 	/**
 	 * Returns the Kafka producer reference,
 	 */
-	getProducer(): kafkaLib.KafkaJS.Producer {
+	getProducer(): any /*kafkaLib.KafkaJS.Producer*/ {
 		return this.getArgByIndex(5)
 	}
 }

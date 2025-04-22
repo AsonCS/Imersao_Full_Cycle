@@ -15,7 +15,7 @@ import {
 	ReadPacket,
 	Server,
 } from '@nestjs/microservices'
-import * as kafkaLib from '@confluentinc/kafka-javascript'
+//import * as kafkaLib from '@confluentinc/kafka-javascript'
 import { Logger } from '@nestjs/common'
 import { KafkaRequestDeserializer } from '@nestjs/microservices/deserializers/kafka-request.deserializer'
 import { KafkaRequestSerializer } from '@nestjs/microservices/serializers/kafka-request.serializer'
@@ -41,11 +41,11 @@ type MakePropRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 type MakePropOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
 export type KafkaServerOptions = {
-	server: MakePropRequired<kafkaLib.KafkaJS.CommonConstructorConfig, 'bootstrap.servers'>
-	consumer?: MakePropOptional<kafkaLib.KafkaJS.ConsumerConfig, 'groupId'>
-	subscribe?: kafkaLib.KafkaJS.ConsumerSubscribeTopics
-	run?: kafkaLib.KafkaJS.ConsumerRunConfig
-	producer?: kafkaLib.KafkaJS.ProducerConfig
+	server: MakePropRequired<any /*kafkaLib.KafkaJS.CommonConstructorConfig*/, 'bootstrap.servers'>
+	consumer?: MakePropOptional<any /*kafkaLib.KafkaJS.ConsumerConfig*/, 'groupId'>
+	subscribe?: any /*kafkaLib.KafkaJS.ConsumerSubscribeTopics*/
+	run?: any /*kafkaLib.KafkaJS.ConsumerRunConfig*/
+	producer?: any /*kafkaLib.KafkaJS.ProducerConfig*/
 	parser?: KafkaParserConfig
 	serializer?: Serializer
 	deserializer?: Deserializer
@@ -55,10 +55,10 @@ export type KafkaServerOptions = {
 export class ConfluentKafkaServer extends Server implements CustomTransportStrategy {
 	public readonly logger = new Logger(ConfluentKafkaServer.name)
 
-	protected client: kafkaLib.KafkaJS.Kafka
-	protected consumer: kafkaLib.KafkaJS.Consumer
-	protected producer: kafkaLib.KafkaJS.Producer
-	protected admin: kafkaLib.KafkaJS.Admin
+	protected client: any /*kafkaLib.KafkaJS.Kafka*/
+	protected consumer: any /*kafkaLib.KafkaJS.Consumer*/
+	protected producer: any /*kafkaLib.KafkaJS.Producer*/
+	protected admin: any /*kafkaLib.KafkaJS.Admin*/
 	protected parser: KafkaParser
 	protected clientId: string
 	protected groupId: string
@@ -91,14 +91,15 @@ export class ConfluentKafkaServer extends Server implements CustomTransportStrat
 	}
 
 	public createClient() {
-		return new kafkaLib.KafkaJS.Kafka({
+		/*return new kafkaLib.KafkaJS.Kafka({
 			...this.options.server,
 			'client.id': this.clientId,
 			'allow.auto.create.topics': true,
-		})
+		})*/
 	}
 
 	public async start(callback?: () => void) {
+		return
 		this.consumer = this.client.consumer({
 			kafkaJS: {
 				...(this.options.consumer || {}),
@@ -112,11 +113,11 @@ export class ConfluentKafkaServer extends Server implements CustomTransportStrat
 		await Promise.all([this.consumer.connect(), this.producer.connect(), this.admin.connect()])
 		await this.bindEvents(this.consumer)
 		if (callback) {
-			callback()
+			callback?.()
 		}
 	}
 
-	public async bindEvents(consumer: kafkaLib.KafkaJS.Consumer) {
+	public async bindEvents(consumer: any /*kafkaLib.KafkaJS.Consumer*/) {
 		const registeredPatterns = [...this.messageHandlers.keys()]
 		const consumerSubscribeOptions = this.options.subscribe || {}
 
@@ -143,7 +144,7 @@ export class ConfluentKafkaServer extends Server implements CustomTransportStrat
 		await consumer.run(consumerRunOptions)
 	}
 
-	public getMessageHandler(): kafkaLib.KafkaJS.EachMessageHandler {
+	public getMessageHandler(): any /*kafkaLib.KafkaJS.EachMessageHandler*/ {
 		return async (payload: EachMessagePayload): Promise<void> => {
 			await this.handleMessage(payload)
 		}
